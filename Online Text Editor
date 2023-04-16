@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Editor de texto en línea</title>
+  <script src="https://cdn.tiny.cloud/1/apikey/tinymce/5/tinymce.min.js"></script>
+  <script>
+    tinymce.init({
+      selector: '#mytextarea',
+      plugins: 'wordcount',
+      toolbar: 'undo redo | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | wordcount',
+    });
+    
+    function downloadFile() {
+      var content = tinymce.get('mytextarea').getContent();
+      var format = document.getElementById('file-format').value;
+      var type, ext;
+      switch (format) {
+        case 'docx':
+          type = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+          ext = 'docx';
+          break;
+        case 'pdf':
+          type = 'application/pdf';
+          ext = 'pdf';
+          break;
+        default:
+          type = 'text/plain';
+          ext = 'txt';
+      }
+      var file = new Blob([content], {type: type});
+      var url = URL.createObjectURL(file);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'documento.' + ext;
+      a.click();
+    }
+  </script>
+  <style>
+    #mytextarea {
+      width: 100%;
+      height: 300px;
+    }
+  </style>
+</head>
+<body>
+  <textarea id="mytextarea"></textarea>
+  <div>
+    <label for="file-format">Selecciona el formato de archivo:</label>
+    <select id="file-format">
+      <option value="docx">.docx</option>
+      <option value="pdf">.pdf</option>
+      <option value="txt">.txt</option>
+    </select>
+  </div>
+  <button onclick="downloadFile()">Descargar</button>
+</body>
+</html>
